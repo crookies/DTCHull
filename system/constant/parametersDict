@@ -1,0 +1,47 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      parametersDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// SHIP GEOMETRY PARAMETERS
+Lwl         6;        // Length of Waterline (m)
+Tm          0.244;    // Mean Draft / Waterline Z-coordinate (m)
+
+// DOMAIN SIZING FACTORS
+Kf_factor   2.0;      // Inlet extension
+Kw_factor   5.0;      // Outlet extension
+H_factor    0.7;      // Top extension
+D_factor    2.5;      // Bottom depth
+KelvinAngle 19.47;    // Kelvin Half-Angle
+
+// PARALLELIZATION PARAMETERS
+NPROC       8;        // Processors
+
+// MESHING PARAMETERS
+// PRODUCTION START: Increased resolution for flow calculation (Target Max Level 7)
+// -----------------------------------------------------------------------------
+MaxCellSize  #calc "($Lwl / 6.0)";
+//MaxCellSize         1;      // Global max cell size (Level 4/5 base)
+
+// Hull: 0.03m cells (Approx 200 cells along ship length). This is much better for RANS fidelity.
+HullCellSize        0.03;     
+
+// Interface: 0.01m cells. Ensures sufficient vertical cells for VOF method.
+InterfaceCellSize   0.1;      
+
+BoundaryCellSize    0.25;     // Coarse size for outer patches
+WallFunctionThickness 0.005;  // Max first layer thickness (Required for generating proper y+ layers)
+
+// ************************************************************************* //

@@ -14,14 +14,12 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 8;
+#include "constant/parametersDict"
 
-method             hierarchical;
+// Use the NPROC variable from the parameters dictionary
+numberOfSubdomains $NPROC;
 
-coeffs
-{
-    n           (2 2 2);
-}
-
+// Changed method to scotch for better load balancing on unstructured mesh
+method             scotch;
 
 // ************************************************************************* //

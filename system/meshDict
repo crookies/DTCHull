@@ -1,0 +1,139 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      meshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "constant/parametersDict"
+
+// --- CALCULATED REFINEMENT GEOMETRY (Using implicit #calc variables) ---
+DomainXSpan #calc "$Lwl * (1.0 + $Kf_factor + $Kw_factor)"; 
+wake_C_X    #calc "-0.5 * $Kw_factor * $Lwl";
+wake_L_X    #calc "$Kw_factor * $Lwl + 2.0";
+wake_L_Y    #calc "tan(degToRad($KelvinAngle)) * ($Lwl + $Kw_factor * $Lwl) * 1.2";
+wake_L_Z    3.0;
+interface_C_X #calc "($Lwl * (1 + $Kf_factor - $Kw_factor)) / 2.0"; 
+interface_L_Y #calc "tan(degToRad($KelvinAngle)) * ($Lwl + $Kw_factor * $Lwl + $Kf_factor * $Lwl) * 1.2";
+interface_L_Z 0.1;
+
+
+surfaceFile "constant/triSurface/meshGeometry.stl";
+
+//minCellSize $MaxCellSize;
+maxCellSize $MaxCellSize;
+//boundaryCellSize $BoundaryCellSize;
+
+
+/*
+boundaryLayers
+{
+    nLayers 5; // Default layers
+    thicknessRatio 1.2;
+    maxFirstLayerThickness $WallFunctionThickness;
+    
+    patchBoundaryLayers
+    {
+        // FIX 1: Target the hull patch using the name reported in ParaView/Log: "OBJECT"
+        "OBJECT"
+        {
+            nLayers 5;
+            thicknessRatio 1.2;
+            maxFirstLayerThickness $WallFunctionThickness;
+        }
+        
+        // Explicitly set nLayers 0 for domain patches to suppress warnings and ensure no layers are built
+        inlet       { nLayers 0; }
+        outlet      { nLayers 0; }
+        atmosphere  { nLayers 0; }
+        bottom      { nLayers 0; }
+        side        { nLayers 0; }
+        midPlane    { nLayers 0; }
+    }
+}
+*/
+
+
+localRefinement
+{
+    "OBJECT"
+    {
+        cellSize $HullCellSize;
+    }
+}
+
+
+
+
+objectRefinements
+{
+/*
+    // 1. Wake Refinement Box
+    wakeBox
+    {
+        type        box;
+        centre      (#calc "$wake_C_X" 0 $Tm);
+        lengthX     #calc "$wake_L_X";
+        lengthY     #calc "$wake_L_Y";
+        lengthZ     #calc "$wake_L_Z";
+        cellSize    $HullCellSize; 
+    }
+
+    */
+
+    // 2. Free Surface Interface (CRITICAL for waves)
+    interface
+    {
+        type        box;
+        centre      (#calc "$interface_C_X" 0 $Tm);
+        lengthX     #calc "$DomainXSpan";
+        lengthY     #calc "$interface_L_Y";
+        lengthZ     0.1;
+        cellSize    0.1;
+    }
+}
+
+
+anisotropicSources
+{
+/*
+    // 2. Free Surface Interface (CRITICAL for waves)
+    interface
+    {
+        type        box;
+        centre      (#calc "$interface_C_X" 0 $Tm);
+        lengthX     #calc "$DomainXSpan";
+        lengthY     #calc "$interface_L_Y";
+        lengthZ     #calc "$interface_L_Z";
+        
+        scaleX 1;
+        scaleY 1;
+        scaleZ 0.015;
+        
+    }
+*/
+    // 2. Free Surface Interface (CRITICAL for waves)
+    interface
+    {
+        type        plane;
+        normal (0 0 1);
+        origin (0 0 $Tm );
+
+        
+        scalingDistance 0.1;
+        scalingFactor   0.02;
+        
+    }
+}
+
+
+// ************************************************************************* //

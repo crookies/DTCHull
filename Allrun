@@ -3,13 +3,6 @@ cd "${0%/*}" || exit                                # Run from this directory
 . ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
 #------------------------------------------------------------------------------
 
-mkdir -p constant/triSurface
-
-# copy DTC hull surface from resources folder
-cp -f \
-    "$FOAM_TUTORIALS"/resources/geometry/DTC-scaled.stl.gz \
-    constant/triSurface/
-
 runApplication surfaceFeatureExtract
 
 runApplication blockMesh

@@ -1,0 +1,127 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "constant/parametersDict"
+
+scale   1;
+
+// 2. CALCULATED DOMAIN DIMENSIONS
+// ===============================
+// Forward extension (Kf) = Kf_factor * Lwl
+Kf      #calc "$Kf_factor * $Lwl";
+
+// Wake extension (Kw) = Kw_factor * Lwl
+Kw      #calc "$Kw_factor * $Lwl";
+
+// Domain Width (W) = tan(KelvinAngle) * (Distance from Bow to Outlet)
+// Total X length = Lwl + Kf + Kw
+W       #calc "tan(degToRad($KelvinAngle)) * ($Lwl + $Kw + $Kf) * 1.1";
+
+// Domain Depth (D) = D_factor * Lwl
+D       #calc "$D_factor * $Lwl";
+
+
+// 3. DERIVED COORDINATES
+// ======================
+// Ship location: Aft at X=0, Bow at X=Lwl. Waterline at Z=Tm.
+
+xMin    #calc "0 - $Kw";        // Outlet
+xMax    #calc "$Lwl + $Kf";     // Inlet
+yMin    #calc "-1.0 * $W";      // Side (Negative Y)
+yMax    0;                      // Centerline (Symmetry)
+zMin    #calc "$Tm - $D";       // Bottom
+zMax    #calc "$Tm + $Lwl * $H_factor"; // Top (using H_factor * Lwl for top clearance)
+
+
+vertices
+(
+    ($xMin $yMin $zMin)  // 0
+    ($xMax $yMin $zMin)  // 1
+    ($xMax $yMax $zMin)  // 2
+    ($xMin $yMax $zMin)  // 3
+
+    ($xMin $yMin $zMax)  // 4
+    ($xMax $yMin $zMax)  // 5
+    ($xMax $yMax $zMax)  // 6
+    ($xMin $yMax $zMax)  // 7
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (10 10 10) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    atmosphere
+    {
+        type patch;
+        faces
+        (
+            (4 5 6 7)
+        );
+    }
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (1 2 6 5)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    bottom
+    {
+        type patch;
+        faces
+        (
+            (0 3 2 1)
+        );
+    }
+    side
+    {
+        type patch;
+        faces
+        (
+            (0 1 5 4)
+        );
+    }
+    midPlane
+    {
+        type symmetryPlane;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //
