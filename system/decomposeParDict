@@ -17,7 +17,7 @@ FoamFile
 #include "constant/configurationDict"
 
 // Use the NPROC variable from the parameters dictionary
-numberOfSubdomains $NPROC;
+numberOfSubdomains $N_PROC;
 
 method             scotch;
 

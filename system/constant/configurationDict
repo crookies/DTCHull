@@ -15,7 +15,7 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // PARALLELIZATION PARAMETERS
-NPROC       8;        // Processors
+N_PROC       8;        // Processors
 
 // SHIP GEOMETRY PARAMETERS
 

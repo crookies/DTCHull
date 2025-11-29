@@ -5,7 +5,7 @@ cd "${0%/*}" || exit                                # Run from this directory
 
 # --- READ PARALLEL PARAMETER ---
 # Read NPROC from system/constant/configurationDict
-NPROC=$(foamDictionary system/constant/configurationDict -entry NPROC -value)
+NPROC=$(foamDictionary system/constant/configurationDict -entry N_PROC -value)
 echo "Starting Mesh Generation Workflow with $NPROC processors..."
 
 mkdir -p constant/triSurface
@@ -24,9 +24,9 @@ runApplication setFields
 # runApplication decomposePar
 runParallel -s decompose redistributePar -decompose
 
-mpirun -np "$NPROC" renumberMesh -overwrite > log.renumberMesh 2>&1
+runParallel renumberMesh -overwrite
 
-mpirun -np "$NPROC" $(getApplication) > log.$(getApplication) 2>&1
+runParallel $(getApplication)
 
 # runApplication reconstructPar
 runParallel -s reconstruct redistributePar -reconstruct
