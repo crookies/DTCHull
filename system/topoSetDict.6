@@ -14,6 +14,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "constant/configurationDict"
+
 actions
 (
     {
@@ -21,7 +23,8 @@ actions
         type    cellSet;
         action  new;
         source  boxToCell;
-        box     (-0.5 -0.55 -0.15) (6.25 0 0.65);
+        box     ( #calc "$refine6_minX * $Lwl" #calc "$refine6_minY * $Lwl" #calc "$refine6_minZ * $Lwl" )
+                ( #calc "$refine6_maxX * $Lwl" #calc "$refine6_maxY * $Lwl" #calc "$refine6_maxZ * $Lwl" );
     }
 );
 

@@ -1,0 +1,151 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      configurationDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// SHIP GEOMETRY PARAMETERS
+
+Lwl         6;        // Length of Waterline (m)
+
+Tm          0.244;    // Mean Draft / Waterline Z-coordinate (m)
+
+
+ThinSurfaceLayer 0.20; // Thickness of the fine mesh layer around free surface
+                       // This value should adapt to the forcasted eight of waves 
+                    /**
+                     * For a 6 m hull moving at 1.668 m/s (Froude number Fn ≈ 0.22):
+                     * Typical wave height: The bow wave crest and stern wave trough for a displacement hull
+                     * are typically 1% to 2% of the ship length.
+                     * 0.01 × 6.0 m = 0.06 m (6 cm)
+                     * 0.02 × 6.0 m = 0.12 m (12 cm)
+                     */
+
+
+// DOMAIN SIZING FACTORS
+
+Kf_factor   2.0;      // Inlet extension
+
+Kw_factor   5.0;      // Outlet extension
+
+H_factor    0.7;      // Top extension
+
+D_factor    2.5;      // Bottom depth
+
+KelvinAngle 19.47;    // Kelvin Half-Angle 
+
+
+// DOMAIN SUBDIVISION (CELL COUNTS)
+
+Nx          42;       // Cells in X direction
+Ny          19;       // Cells in Y direction
+
+Nz_1        50;       // Cells in Z (Layer 1: Bottom)
+Nz_2        50;       // Cells in Z (Layer 2)
+Nz_3        16;        // Cells in Z (Layer 3)              // Bellow water line
+Nz_4        16;        // Cells in Z (Layer 4)              // Above water line
+Nz_5        40;       // Cells in Z (Layer 5)
+Nz_6        20;       // Cells in Z (Layer 6: Top)
+
+
+// TOPOSET COEF
+
+// Refinement Box 1 Coefficients (relative to Lwl)
+refine1_minX   -1.6667;  // -10/6
+refine1_maxX    1.6667;  //  10/6
+refine1_minY   -1.0;     //  -6/6
+refine1_maxY    0.0;     //   0
+refine1_minZ   -0.5;     //  -3/6
+refine1_maxZ    0.5;     //   3/6
+
+// Refinement Box 2 Coefficients
+refine2_minX   -0.8333;  // -5/6
+refine2_maxX    1.5;     //  9/6
+refine2_minY   -0.5;     // -3/6
+refine2_maxY    0.0;     //  0
+refine2_minZ   -0.4167;  // -2.5/6
+refine2_maxZ    0.3333;  //  2/6
+
+// Refinement Box 3 Coefficients
+refine3_minX   -0.5;     // -3/6
+refine3_maxX    1.3333;  //  8/6
+refine3_minY   -0.25;    // -1.5/6
+refine3_maxY    0.0;     //  0
+refine3_minZ   -0.1667;  // -1/6
+refine3_maxZ    0.25;    //  1.5/6
+
+// Refinement Box 4 Coefficients
+refine4_minX   -0.3333;  // -2/6
+refine4_maxX    1.1667;  //  7/6
+refine4_minY   -0.1667;  // -1/6
+refine4_maxY    0.0;     //  0
+refine4_minZ   -0.1;     // -0.6/6
+refine4_maxZ    0.1667;  //  1/6
+
+// Refinement Box 5 Coefficients
+refine5_minX   -0.1667;  // -1/6
+refine5_maxX    1.0833;  //  6.5/6
+refine5_minY   -0.1;     // -0.6/6
+refine5_maxY    0.0;     //  0
+refine5_minZ   -0.05;    // -0.3/6
+refine5_maxZ    0.1333;  //  0.8/6
+
+// Refinement Box 6 Coefficients
+refine6_minX   -0.0833;  // -0.5/6
+refine6_maxX    1.0417;  //  6.25/6
+refine6_minY   -0.0917;  // -0.55/6
+refine6_maxY    0.0;     //  0
+refine6_minZ   -0.025;   // -0.15/6
+refine6_maxZ    0.1083;  //  0.65/6
+
+
+// 2. CALCULATED DOMAIN DIMENSIONS
+// ===============================
+// Forward extension (Kf) = Kf_factor * Lwl
+Kf      #calc "($Kf_factor * $Lwl)";
+
+// Wake extension (Kw) = Kw_factor * Lwl
+Kw      #calc "($Kw_factor * $Lwl)";
+
+// Domain Width (W) = tan(KelvinAngle) * (Distance from Bow to Outlet)
+// Total X length = Lwl + Kf + Kw
+W       #calc "(tan(degToRad($KelvinAngle)) * ($Lwl + $Kw + $Kf ) * 1.1)";
+
+// Domain Depth (D) = D_factor * Lwl
+D       #calc "($D_factor * $Lwl)";
+
+// 3. DERIVED COORDINATES
+// ======================
+// Ship location: Aft at X=0, Bow at X=Lwl. Waterline at Z=Tm.
+
+xMin    #calc "0 - $Kw";        // Outlet
+xMax    #calc "$Lwl + $Kf";     // Inlet
+yMin    #calc "-1.0 * $W";      // Side (Negative Y)
+yMax    0;                      // Centerline (Symmetry)
+
+
+// Z layers limit (in meter)
+
+zMin    #calc "$Tm - $D";       // Bottom
+
+zCoarseBelow #calc "-($Lwl / 6)";      // Z-coordinate for coarse mesh transition below hull
+
+zBelowSurface #calc "$Tm - $ThinSurfaceLayer/2";
+zAboveSurface #calc "$Tm + $ThinSurfaceLayer/2";
+
+zCoarseAbove #calc "($Lwl / 3.75)";      // Z-coordinate for coarse mesh transition above hull
+
+zMax    #calc "$Tm + $Lwl * $H_factor"; // Top (using H_factor * Lwl for top clearance)
+
+
+// ************************************************************************* //
