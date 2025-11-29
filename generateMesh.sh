@@ -4,6 +4,11 @@ cd ${0%/*} || exit 1    # Run from this directory
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
+# --- READ PARALLEL PARAMETER ---
+# Read NPROC from system/constant/configurationDict
+NPROC=$(foamDictionary system/constant/configurationDict -entry NPROC -value)
+echo "Starting Mesh Generation Workflow with $NPROC processors..."
+
 # Get application name
 application=$(getApplication)
 
@@ -41,7 +46,7 @@ echo "Decomposing for snappyHexMesh..."
 runApplication decomposePar || { echo "Error: decomposePar failed"; exit 1; }
 
 echo "Running snappyHexMesh in parallel..."
-runParallel snappyHexMesh -overwrite || { echo "Error: snappyHexMesh failed"; exit 1; }
+mpirun -np "$NPROC" snappyHexMesh -parallel -overwrite >log.snappyHexMesh 2>&1 || { echo "Error: snappyHexMesh failed"; exit 1; }
 
 echo "Reconstructing mesh..."
 runApplication reconstructParMesh -constant || { echo "Error: reconstructParMesh failed"; exit 1; }

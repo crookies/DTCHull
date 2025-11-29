@@ -14,7 +14,10 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 8;
+#include "constant/configurationDict"
+
+// Use the NPROC variable from the parameters dictionary
+numberOfSubdomains $NPROC;
 
 method             scotch;
 

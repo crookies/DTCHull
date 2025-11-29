@@ -3,6 +3,11 @@ cd "${0%/*}" || exit                                # Run from this directory
 . ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
 #------------------------------------------------------------------------------
 
+# --- READ PARALLEL PARAMETER ---
+# Read NPROC from system/constant/configurationDict
+NPROC=$(foamDictionary system/constant/configurationDict -entry NPROC -value)
+echo "Starting Mesh Generation Workflow with $NPROC processors..."
+
 mkdir -p constant/triSurface
 
 # copy DTC hull surface from resources folder
@@ -19,9 +24,9 @@ runApplication setFields
 # runApplication decomposePar
 runParallel -s decompose redistributePar -decompose
 
-runParallel renumberMesh -overwrite
+mpirun -np "$NPROC" renumberMesh -overwrite > log.renumberMesh 2>&1
 
-runParallel $(getApplication)
+mpirun -np "$NPROC" $(getApplication) > log.$(getApplication) 2>&1
 
 # runApplication reconstructPar
 runParallel -s reconstruct redistributePar -reconstruct
