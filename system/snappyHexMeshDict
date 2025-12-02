@@ -14,6 +14,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "constant/configurationDict"
+
 // Which of the steps to run
 castellatedMesh true;
 snap            true;
@@ -28,7 +30,7 @@ addLayers       true;
 // - to 'snap' the mesh boundary to the surface
 geometry
 {
-    DTC-scaled.stl
+    $stlName
     {
         type triSurfaceMesh;
         name hull;
@@ -81,7 +83,7 @@ castellatedMeshControls
     features
     (
          {
-             file "DTC-scaled.eMesh";
+             file featureExtraction.eMesh;
              level 0;
          }
     );

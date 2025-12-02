@@ -12,17 +12,27 @@ FoamFile
     class       dictionary;
     object      surfaceFeatureExtractDict;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-DTC-scaled.stl
+#include "constant/configurationDict"
+
+// ************************************************************************* //
+
+featureExtraction
 {
+    // The dictionary name (e.g., 'featureExtraction') is arbitrary
+    // when the 'surfaces' entry is used.
+
+    // Explicitly define the surface file name using the variable
+    surfaces
+    (
+        $stlName
+    );
+
     // How to obtain raw features (extractFromFile || extractFromSurface)
     extractionMethod    extractFromSurface;
 
     // Mark edges whose adjacent surface normals are at an angle less
     // than includedAngle as features
-    // - 0  : selects no edges
-    // - 180: selects all edges
     includedAngle       150;
 
     subsetFeatures
@@ -40,6 +50,4 @@ DTC-scaled.stl
     // Write features to obj format for postprocessing
     writeObj            yes;
 }
-
-
 // ************************************************************************* //
