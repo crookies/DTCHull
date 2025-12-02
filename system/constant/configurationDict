@@ -12,12 +12,14 @@ stlName     DTC-scaled.stl;    // Input Geometry File
 Lwl         6;        // Length of Waterline (m)
 Tm          0.244;    // Max Draft / Waterline Z-coordinate (m)
 H           0.572;    // Height from Keel to Deck (m)
+Bm          0.87;      // Beam Max (m)
 */
 
-stlName     crldl1.stl;    // Input Geometry File
+stlName     crldl1f.stl;    // Input Geometry File
 Lwl         6;        // Length of Waterline (m)
 Tm          0.255;    // Max Draft / Waterline Z-coordinate (m)
 H           0.878;    // Height from Keel to Deck (m)
+Bm          1.58;      // Beam Max (m)
 
 
 ThinSurfaceLayer 0.20; // Thickness of the fine mesh layer around free surface
@@ -62,11 +64,12 @@ Nz_6        20;       // Cells in Z (Layer 6: Top)
 // Refinement Box Coefficients (relative to Lwl, and H and Tm for Z)
 Zpositive  #calc "($H - $Tm)";
 Znegative  #calc "($Tm)";
+Zmin       #calc "($Bm / 2)";
 
 // Refinement Box 1 Coefficients (relative to Lwl)
 refine1_minX   -1.6667;  // -10/6
 refine1_maxX    1.6667;  //  10/6
-refine1_minY   -1.0;     //  -6/6
+refine1_minY   -7.5949;  //  -6/Zmin
 refine1_maxY    0.0;     //   0
 refine1_minZ   -12.2951; //  -3/Znegative
 refine1_maxZ    9.1463;  //   3/Zpositive
@@ -74,7 +77,7 @@ refine1_maxZ    9.1463;  //   3/Zpositive
 // Refinement Box 2 Coefficients
 refine2_minX   -0.8333;  // -5/6
 refine2_maxX    1.5;     //  9/6
-refine2_minY   -0.5;     // -3/6
+refine2_minY   -3.7975;  // -3/Zmin
 refine2_maxY    0.0;     //  0
 refine2_minZ   -10.2459; // -2.5/Znegative
 refine2_maxZ    6.0976;  //  2/Zpositive
@@ -82,7 +85,7 @@ refine2_maxZ    6.0976;  //  2/Zpositive
 // Refinement Box 3 Coefficients
 refine3_minX   -0.5;     // -3/6
 refine3_maxX    1.3333;  //  8/6
-refine3_minY   -0.25;    // -1.5/6
+refine3_minY   -1.8987;  // -1.5/Zmin
 refine3_maxY    0.0;     //  0
 refine3_minZ   -4.0984;  // -1/Znegative
 refine3_maxZ    4.5732;  //  1.5/Zpositive
@@ -90,7 +93,7 @@ refine3_maxZ    4.5732;  //  1.5/Zpositive
 // Refinement Box 4 Coefficients
 refine4_minX   -0.3333;  // -2/6
 refine4_maxX    1.1667;  //  7/6
-refine4_minY   -0.1667;  // -1/6
+refine4_minY   -1.2658;  // -1/Zmin
 refine4_maxY    0.0;     //  0
 refine4_minZ   -2.4590;  // -0.6/Znegative
 refine4_maxZ    3.0488;  //  1/Zpositive
@@ -98,7 +101,7 @@ refine4_maxZ    3.0488;  //  1/Zpositive
 // Refinement Box 5 Coefficients
 refine5_minX   -0.1667;  // -1/6
 refine5_maxX    1.0833;  //  6.5/6
-refine5_minY   -0.1;     // -0.6/6
+refine5_minY   -0.7595;  // -0.6/Zmin
 refine5_maxY    0.0;     //  0
 refine5_minZ   -1.2295;  // -0.3/Znegative
 refine5_maxZ    2.4390;  //  0.8/Zpositive
@@ -106,7 +109,7 @@ refine5_maxZ    2.4390;  //  0.8/Zpositive
 // Refinement Box 6 Coefficients
 refine6_minX   -0.0833;  // -0.5/6
 refine6_maxX    1.0417;  //  6.25/6
-refine6_minY   -0.0917;  // -0.55/6
+refine6_minY   -0.6962;  // -0.55/Zmin
 refine6_maxY    0.0;     //  0
 refine6_minZ   -0.6148;  // -0.15/Znegative
 refine6_maxZ    1.9817;  //  0.65/Zpositive

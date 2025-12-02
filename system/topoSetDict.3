@@ -23,8 +23,8 @@ actions
         type    cellSet;
         action  new;
         source  boxToCell;
-        box     ( #calc "$refine3_minX * $Lwl" #calc "$refine3_minY * $Lwl" #calc "$refine3_minZ * $Znegative" )
-                ( #calc "$refine3_maxX * $Lwl" #calc "$refine3_maxY * $Lwl" #calc "$refine3_maxZ * $Zpositive" );
+        box     ( #calc "$refine3_minX * $Lwl" #calc "$refine3_minY * $Zmin" #calc "$refine3_minZ * $Znegative" )
+                ( #calc "$refine3_maxX * $Lwl" $refine3_maxY #calc "$refine3_maxZ * $Zpositive" );
     }
 );
 
