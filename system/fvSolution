@@ -81,8 +81,8 @@ PIMPLE
     nCorrectors         2;
     nNonOrthogonalCorrectors 0;
 
-    maxCo               10;
-    maxAlphaCo          5;
+    maxCo               2;
+    maxAlphaCo          1;
 
     rDeltaTSmoothingCoeff 0.05;
     rDeltaTDampingCoeff 0.5;
