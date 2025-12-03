@@ -5,6 +5,9 @@
 // PARALLELIZATION PARAMETERS
 N_PROC       8;        // Processors
 
+// PHYSICS PARAMETERS
+rho         998.8;    // Water Density (kg/m^3)
+
 // SHIP GEOMETRY PARAMETERS
 
 /*
@@ -17,7 +20,7 @@ Bm          0.87;      // Beam Max (m)
 
 stlName     crldl1f.stl;    // Input Geometry File
 Lwl         6;        // Length of Waterline (m)
-Tm          0.255;    // Max Draft / Waterline Z-coordinate (m)
+Tm          0.258;    // Max Draft / Waterline Z-coordinate (m)
 H           0.878;    // Height from Keel to Deck (m)
 Bm          1.58;      // Beam Max (m)
 

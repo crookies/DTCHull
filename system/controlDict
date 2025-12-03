@@ -14,6 +14,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "constant/configurationDict"
+
 application     interFoam;
 
 startFrom       startTime;
@@ -51,7 +53,7 @@ functions
         type            forces;
         libs            (forces);
         patches         (hull);
-        rhoInf          998.8;
+        rhoInf          $rho;
         log             on;
         writeControl    timeStep;
         writeInterval   1;
