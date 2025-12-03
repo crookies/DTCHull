@@ -10,4 +10,6 @@ rm -f system/topoSetDict
 # Remove surfaces and features
 rm -rf constant/extendedFeatureEdgeMesh
 
+rm -f  constant/triSurface/*.eMesh
+
 #------------------------------------------------------------------------------
