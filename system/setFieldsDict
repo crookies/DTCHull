@@ -14,6 +14,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "constant/configurationDict"
+
 defaultFieldValues
 (
     volScalarFieldValue alpha.water 0
@@ -25,7 +27,7 @@ regions
     // (does zerogradient on boundaries)
     boxToCell
     {
-        box (-999 -999 -999) (999 999 0.244);
+        box (-999 -999 -999) (999 999 $Tm);
 
         fieldValues
         (
@@ -36,7 +38,7 @@ regions
     // Set patch values (using ==)
     boxToFace
     {
-        box (-999 -999 -999) (999 999 0.244);
+        box (-999 -999 -999) (999 999 $Tm);
 
         fieldValues
         (
